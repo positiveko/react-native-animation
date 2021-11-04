@@ -11,9 +11,8 @@ export default function App() {
   const [index, setIndex] = useState(0);
   const onDismiss = () => {
     scale.setValue(1);
-    position.setValue(0);
     setIndex((prev) => prev + 1);
-    // Animated.timing(position, { toValue: 0, useNativeDriver: true }).start();
+    position.setValue(0);
   };
 
   // Values
@@ -46,6 +45,8 @@ export default function App() {
     toValue: -SCREEN_WIDTH,
     tension: 5,
     useNativeDriver: true,
+    restDisplacementThreshold: 100,
+    restSpeedThreshold: 100,
   });
   const goRight = Animated.spring(position, {
     toValue: SCREEN_WIDTH,
@@ -59,7 +60,6 @@ export default function App() {
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (_, { dx }) => {
-        console.log(dx);
         position.setValue(dx);
       },
       onPanResponderGrant: () => onPressIn.start(),
