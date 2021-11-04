@@ -1,9 +1,19 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Animated, PanResponder, View } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
+import { icons } from './icons';
 
 export default function App() {
+  // State
+  const [index, setIndex] = useState(0);
+  const onDismiss = () => {
+    scale.setValue(1);
+    position.setValue(0);
+    setIndex((prev) => prev + 1);
+    // Animated.timing(position, { toValue: 0, useNativeDriver: true }).start();
+  };
+
   // Values
   const scale = useRef(new Animated.Value(1)).current;
   const position = useRef(new Animated.Value(0)).current;
@@ -65,17 +75,17 @@ export default function App() {
   ).current;
 
   const closePress = () => {
-    goLeft.start();
+    goLeft.start(onDismiss);
   };
   const checkPress = () => {
-    goRight.start();
+    goRight.start(onDismiss);
   };
 
   return (
     <Container>
       <CardContainer>
         <Card style={{ transform: [{ scale: secondScale }] }}>
-          <Ionicons name='flower' color='#192a56' size={98} />
+          <Ionicons name={icons[index + 1]} color='#192a56' size={98} />
         </Card>
         <Card
           {...panResponder.panHandlers}
@@ -86,7 +96,7 @@ export default function App() {
               { rotateZ: rotation },
             ],
           }}>
-          <Ionicons name='flag' color='#192a56' size={98} />
+          <Ionicons name={icons[index]} color='#192a56' size={98} />
         </Card>
       </CardContainer>
       <BtnContainer>
