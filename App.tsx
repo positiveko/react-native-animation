@@ -3,6 +3,7 @@ import { Animated, PanResponder } from 'react-native';
 import styled from 'styled-components/native';
 
 export default function App() {
+  // https://github.com/facebook/react-native/blob/main/packages/rn-tester/js/examples/PanResponder/PanResponderExample.js 참고
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -12,6 +13,16 @@ export default function App() {
           x: dx,
           y: dy,
         });
+      },
+      onPanResponderRelease: () => {
+        Animated.spring(POSITION, {
+          toValue: {
+            x: 0,
+            y: 0,
+          },
+          bounciness: 20,
+          useNativeDriver: false,
+        }).start();
       },
     })
   ).current;
@@ -40,7 +51,7 @@ export default function App() {
         style={{
           borderRadius,
           backgroundColor: bgColor,
-          transform: [...POSITION.getTranslateTransform()],
+          transform: POSITION.getTranslateTransform(),
         }}
       />
     </Container>
