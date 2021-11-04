@@ -1,25 +1,55 @@
-import React, { useRef, useState } from 'react';
-import { Animated, Pressable } from 'react-native';
+import React, { useRef } from 'react';
+import { Animated, Dimensions, Pressable } from 'react-native';
 import styled from 'styled-components/native';
 
-export default function App() {
-  const [up, setUp] = useState(false);
-  const POSITION = useRef(new Animated.ValueXY({ x: 0, y: 300 })).current;
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-  const toggleUp = () => setUp((prev) => !prev);
+export default function App() {
+  const POSITION = useRef(
+    new Animated.ValueXY({
+      x: -SCREEN_WIDTH / 2 + 100,
+      y: -SCREEN_HEIGHT / 2 + 100,
+    })
+  ).current;
+
+  const topLeft = Animated.timing(POSITION, {
+    toValue: {
+      x: -SCREEN_WIDTH / 2 + 100,
+      y: -SCREEN_HEIGHT / 2 + 100,
+    },
+    useNativeDriver: false,
+  });
+
+  const bottomLeft = Animated.timing(POSITION, {
+    toValue: {
+      x: -SCREEN_WIDTH / 2 + 100,
+      y: SCREEN_HEIGHT / 2 - 100,
+    },
+    useNativeDriver: false,
+  });
+
+  const bottomRight = Animated.timing(POSITION, {
+    toValue: {
+      x: SCREEN_WIDTH / 2 - 100,
+      y: SCREEN_HEIGHT / 2 - 100,
+    },
+    useNativeDriver: false,
+  });
+
+  const topRight = Animated.timing(POSITION, {
+    toValue: {
+      x: SCREEN_WIDTH / 2 - 100,
+      y: -SCREEN_HEIGHT / 2 + 100,
+    },
+    useNativeDriver: false,
+  });
 
   const moveUp = () => {
-    Animated.timing(POSITION, {
-      toValue: up ? 300 : -300,
-      useNativeDriver: false,
-      duration: 1000,
-    }).start(toggleUp);
+    // Animated.sequence 배열 안에 있는 애니메이션 이어서 재생
+    Animated.loop(
+      Animated.sequence([bottomLeft, bottomRight, topRight, topLeft])
+    ).start();
   };
-
-  const rotation = POSITION.y.interpolate({
-    inputRange: [-300, 300],
-    outputRange: ['-360deg', '360deg'],
-  });
 
   const borderRadius = POSITION.y.interpolate({
     inputRange: [-300, 300],
@@ -38,7 +68,9 @@ export default function App() {
           style={{
             borderRadius,
             backgroundColor: bgColor,
-            transform: [{ rotateY: rotation }, { translateY: POSITION.y }],
+            // transform: [{ translateY: POSITION.y }, { translateX: POSITION.x }]
+            // 대신 getTranslateTransform() 사용할 수 있음
+            transform: [...POSITION.getTranslateTransform()],
           }}
         />
       </Pressable>
