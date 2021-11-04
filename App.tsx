@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { Animated, PanResponder, View } from 'react-native';
+import { Animated, Dimensions, PanResponder, View } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { icons } from './icons';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function App() {
   // State
@@ -41,12 +43,12 @@ export default function App() {
     useNativeDriver: true,
   });
   const goLeft = Animated.spring(position, {
-    toValue: -500,
+    toValue: -SCREEN_WIDTH,
     tension: 5,
     useNativeDriver: true,
   });
   const goRight = Animated.spring(position, {
-    toValue: 500,
+    toValue: SCREEN_WIDTH,
     tension: 5,
     useNativeDriver: true,
   });
